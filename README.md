@@ -1,1 +1,1 @@
-An ecommerce project aimed to revolutionize the shopping experience.
+Bhashini Hackathon Runner-up project

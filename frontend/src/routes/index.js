@@ -12,8 +12,8 @@ import CategoryProduct from '../pages/CategoryProduct';
 import ProductDetails from '../pages/ProductDetails';
 import Cart from '../pages/Cart';
 import SearchProduct from '../pages/SearchProduct';
-import Spatial from '../pages/Spatial';
-import ChatWidget from '../pages/ChatWidget';
+// import Spatial from '../pages/Spatial';
+// import ChatWidget from '../pages/ChatWidget';
 
 const router = createBrowserRouter([
     {
@@ -52,14 +52,14 @@ const router = createBrowserRouter([
                 path : "search",
                 element : <SearchProduct/>
             },
-            {
-                path : "spatial",
-                element : <Spatial/>
-            },
-            {
-                path : "chatbot",
-                element : <ChatWidget/>
-            },
+            // {
+            //     path : "spatial",
+            //     element : <Spatial/>
+            // },
+            // {
+            //     path : "chatbot",
+            //     element : <ChatWidget/>
+            // },
             {
                 path:"admin-panel",
                 element: <AdminPanel/>,

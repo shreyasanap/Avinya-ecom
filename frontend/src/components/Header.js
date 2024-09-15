@@ -254,7 +254,7 @@ const Header = () => {
               </div>
             </Link>
           )}
-          {user?._id && (
+          {/* {user?._id && (
             <Link to={"/spatial"} className="text-lg relative">
               <button>Metaverse</button>
             </Link>
@@ -264,7 +264,7 @@ const Header = () => {
               <button className="bg-red-500 p-2 rounded-lg text-white">Chatbot</button>
             </Link>
           )}
-          
+           */}
 
           <div>
             {user?._id ? (

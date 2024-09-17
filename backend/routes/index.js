@@ -25,6 +25,8 @@ const filterProductController = require('../controller/product/filterProduct')
 const paymentController = require('../controller/order/paymentController')
 
 
+
+
 router.post("/sign-up",userSignUpController)
 router.post("/sign-in",userSignInController)
 router.get("/user-details",authToken,userDetailsController)
@@ -52,8 +54,9 @@ router.get("/view-card-product",authToken,addToCartViewProduct)
 router.post("/update-cart-product",authToken,updateAddToCartProduct)
 router.post("/delete-cart-product",authToken,deleteAddToCartProduct)
 
-//payment and order
+//payment
 router.post('/checkout',authToken,paymentController)
+
 
 
 

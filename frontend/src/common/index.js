@@ -1,5 +1,6 @@
 // Define backendDomain before SummaryApi
-const backendDomain = "http://localhost:8080";
+// const backendDomain = "http://localhost:8080";
+const backendDomain = process.env.REACT_APP_BACKEND_URL;
 
 // Initialize SummaryApi with backendDomain
 const SummaryApi = {

@@ -4,12 +4,14 @@ import Context from '../context'
 import displayINRCurrency from '../helpers/displayCurrency'
 import { MdDelete } from "react-icons/md"
 import { loadStripe } from '@stripe/stripe-js'
+import { useNavigate } from 'react-router-dom' // For navigation
 
 const Cart = () => {
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(false)
     const context = useContext(Context)
     const loadingCart = new Array(4).fill(null)
+    const navigate = useNavigate() // To handle page navigation
 
     // Form state
     const [userInfo, setUserInfo] = useState({
@@ -18,6 +20,9 @@ const Cart = () => {
         address: '',
         pincode: ''
     })
+
+    // Payment type state
+    const [paymentType, setPaymentType] = useState('online')
 
     const fetchData = async () => {
         const response = await fetch(SummaryApi.addToCartProductView.url, {
@@ -100,20 +105,26 @@ const Cart = () => {
     }
 
     const handlePayment = async () => {
-        const stripePromise = await loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY)
-        const response = await fetch(SummaryApi.payment.url, {
-            method: SummaryApi.payment.method,
-            credentials: 'include',
-            headers: {
-                "content-type": 'application/json'
-            },
-            body: JSON.stringify({
-                cartItems: data
+        if (paymentType === 'offline') {
+            // Navigate to success page for offline payment
+            navigate('/success')
+        } else {
+            // Stripe payment for online payment
+            const stripePromise = await loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY)
+            const response = await fetch(SummaryApi.payment.url, {
+                method: SummaryApi.payment.method,
+                credentials: 'include',
+                headers: {
+                    "content-type": 'application/json'
+                },
+                body: JSON.stringify({
+                    cartItems: data
+                })
             })
-        })
-        const responseData = await response.json()
-        if (responseData?.id) {
-            stripePromise.redirectToCheckout({ sessionId: responseData.id })
+            const responseData = await response.json()
+            if (responseData?.id) {
+                stripePromise.redirectToCheckout({ sessionId: responseData.id })
+            }
         }
     }
 
@@ -161,26 +172,35 @@ const Cart = () => {
                 </div>
 
                 {/* Shipping Information Form */}
-                <div className='w-full max-w-sm ml-10 mr-10'> {/* Moved form to left with margin */}
+                <div className='w-full max-w-sm lg:-ml-10'> {/* Moved form to left with margin */}
                     <h2 className='text-xl font-semibold mb-4'>Shipping Information</h2>
                     <form className='bg-white p-4 rounded'>
                         <div className='mb-4'>
-                            <label className='block text-sm font-medium'>Name:</label>
+                            <label className='block text-sm font-medium'>Name</label>
                             <input type='text' className='border border-gray-300 p-2 w-full rounded' value={userInfo.name} onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })} />
                         </div>
                         <div className='mb-4'>
-                            <label className='block text-sm font-medium'>Phone No:</label>
+                            <label className='block text-sm font-medium'>Phone</label>
                             <input type='text' className='border border-gray-300 p-2 w-full rounded' value={userInfo.phone} onChange={(e) => setUserInfo({ ...userInfo, phone: e.target.value })} />
                         </div>
                         <div className='mb-4'>
-                            <label className='block text-sm font-medium'>Address:</label>
+                            <label className='block text-sm font-medium'>Address</label>
                             <input type='text' className='border border-gray-300 p-2 w-full rounded' value={userInfo.address} onChange={(e) => setUserInfo({ ...userInfo, address: e.target.value })} />
                         </div>
                         <div className='mb-4'>
-                            <label className='block text-sm font-medium'>Pincode:</label>
+                            <label className='block text-sm font-medium'>Pincode</label>
                             <input type='text' className='border border-gray-300 p-2 w-full rounded' value={userInfo.pincode} onChange={(e) => setUserInfo({ ...userInfo, pincode: e.target.value })} />
                         </div>
                     </form>
+
+                    {/* Payment Type Dropdown */}
+                    <div className='mt-4'>
+                        <label className='block text-sm font-medium mb-2'>Payment Method</label>
+                        <select className='border border-gray-300 p-2 w-full rounded' value={paymentType} onChange={(e) => setPaymentType(e.target.value)}>
+                            <option value='online'>Online Payment</option>
+                            <option value='offline'>Offline Payment</option>
+                        </select>
+                    </div>
 
                     {/* Summary section */}
                     {data.length > 0 && (
@@ -198,7 +218,7 @@ const Cart = () => {
                                         <p>Total Price</p>
                                         <p>{displayINRCurrency(totalPrice)}</p>
                                     </div>
-                                    <button className='bg-blue-600 p-2 text-white w-full mt-2' onClick={handlePayment}>Payment</button>
+                                    <button className='bg-blue-600 p-2 text-white w-full mt-2' onClick={handlePayment}>Proceed to Payment</button>
                                 </div>
                             )}
                         </div>
